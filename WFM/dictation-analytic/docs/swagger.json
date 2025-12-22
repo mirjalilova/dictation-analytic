@@ -1,0 +1,104 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for comparing original and user dictation text.",
+        "title": "Dictation Analytic API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/compare": {
+            "post": {
+                "description": "Returns spelling, missing, extra, punctuation errors etc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Compare original and user text",
+                "parameters": [
+                    {
+                        "description": "Texts to compare",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CompareRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.CompareAnalytics"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.CompareAnalytics": {
+            "type": "object",
+            "properties": {
+                "count_mistakes": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.WordResult"
+                    }
+                },
+                "similarity": {
+                    "type": "number"
+                },
+                "total_score": {
+                    "type": "number"
+                }
+            }
+        },
+        "main.CompareRequest": {
+            "description": "API for comparing original and user dictation text.",
+            "type": "object",
+            "required": [
+                "original",
+                "user"
+            ],
+            "properties": {
+                "original": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.WordResult": {
+            "type": "object",
+            "properties": {
+                "has_mistake": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mistake_type": {
+                    "type": "string"
+                },
+                "original_word": {
+                    "type": "string"
+                },
+                "removed_points": {
+                    "type": "number"
+                },
+                "word": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

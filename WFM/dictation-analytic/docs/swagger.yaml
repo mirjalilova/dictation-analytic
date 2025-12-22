@@ -1,0 +1,68 @@
+basePath: /
+definitions:
+  main.CompareAnalytics:
+    properties:
+      count_mistakes:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/main.WordResult'
+        type: array
+      similarity:
+        type: number
+      total_score:
+        type: number
+    type: object
+  main.CompareRequest:
+    description: API for comparing original and user dictation text.
+    properties:
+      original:
+        type: string
+      user:
+        type: string
+    required:
+    - original
+    - user
+    type: object
+  main.WordResult:
+    properties:
+      has_mistake:
+        type: boolean
+      id:
+        type: integer
+      mistake_type:
+        type: string
+      original_word:
+        type: string
+      removed_points:
+        type: number
+      word:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API for comparing original and user dictation text.
+  title: Dictation Analytic API
+  version: "1.0"
+paths:
+  /compare:
+    post:
+      consumes:
+      - application/json
+      description: Returns spelling, missing, extra, punctuation errors etc.
+      parameters:
+      - description: Texts to compare
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.CompareRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.CompareAnalytics'
+      summary: Compare original and user text
+swagger: "2.0"
