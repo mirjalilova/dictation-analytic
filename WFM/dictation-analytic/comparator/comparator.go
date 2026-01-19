@@ -37,8 +37,7 @@ type CompareAnalytics struct {
     Data          []WordResult `json:"data"`
 }
 
-var tokenRe = regexp.MustCompile(`[\p{L}\p{M}]+|\p{N}+|[^\s\p{L}\p{N}]`)
-
+var tokenRe = regexp.MustCompile(`[\p{L}\p{M}\p{N}]+|[^\s\p{L}\p{M}\p{N}]`)
 
 func tokenize(s string) []string {
 	return tokenRe.FindAllString(s, -1)
@@ -103,26 +102,25 @@ func scoreBetween(a, b string) int {
         return 200
     }
 
-    if isPunct(a) && isPunct(b) {
-        return -50
+    if isPunct(a) != isPunct(b) {
+        return -1000
     }
 
-    if isPunct(a) != isPunct(b) {
-        return -500
+    if isPunct(a) && isPunct(b) {
+        return -200
     }
 
     d := levenshtein(a, b)
 
     if d == 1 {
-        return 50
+        return 80
     }
     if d == 2 {
-        return 20
+        return 40
     }
 
-    return 0
+    return -1000
 }
-
 
 func align(a, b []string) []op {
     la := len(a)
@@ -138,7 +136,7 @@ func align(a, b []string) []op {
         dp[i] = make([]cell, lb+1)
     }
 
-    const gapPenalty = -300
+    const gapPenalty = -120
 
     dp[0][0] = cell{score: 0, prev: -1}
     for i := 1; i <= la; i++ {
